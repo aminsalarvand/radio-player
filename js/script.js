@@ -1604,28 +1604,37 @@ async function detectAI() {
     result.textContent = "Analyzing...";
 
     try {
-        const response = await fetch("http://127.0.0.1:5000/api/mood", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                text: text
-            })
-        });
+        const response = await fetch(
+            "https://radio-player-s12x.onrender.com/api/mood",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    text: text
+                })
+            }
+        );
 
         if (!response.ok) {
             throw new Error("HTTP " + response.status);
         }
 
         const data = await response.json();
+
         playAIRadio(data.mood);
-        const mood = window.AI_MOOD_NAMES[data.mood] || "Neutral";
-        result.textContent = "Your mood: " + mood;
+
+        const mood =
+            window.AI_MOOD_NAMES[data.mood] || "Neutral";
+
+        result.textContent =
+            "Your mood: " + mood;
 
     } catch (error) {
         console.error("AI ERROR:", error);
 
-        result.textContent = "AI ERROR: " + error.message;
+        result.textContent =
+            "AI ERROR: " + error.message;
     }
 }
