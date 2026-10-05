@@ -670,3 +670,131 @@ body.modal-open { overflow: hidden; }
     height: auto;
     border-radius: 6px;
 }
+
+.radio-stations {
+    width: 100%;
+    max-width: 520px;
+    margin: 28px auto 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.radio-station {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.045);
+    color: #fff;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(12px);
+}
+
+.radio-station:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 225, 231, 0.35);
+}
+
+.radio-station.active {
+    background: rgba(0, 225, 231, 0.10);
+    border-color: rgba(0, 225, 231, 0.55);
+    box-shadow: 0 0 24px rgba(0, 225, 231, 0.10);
+}
+
+.radio-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.07);
+    color: #aaa;
+    transition: all 0.25s ease;
+}
+
+.radio-station.active .radio-icon {
+    background: rgba(0, 225, 231, 0.16);
+    color: #00e1e7;
+}
+
+.radio-station-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.radio-station-info strong {
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.radio-station-info small {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.45);
+    white-space: nowrap;
+}
+
+.radio-live-dot {
+    width: 6px;
+    height: 6px;
+    flex: 0 0 6px;
+    margin-left: auto;
+    border-radius: 50%;
+    background: #555;
+}
+
+.radio-station.active .radio-live-dot {
+    background: #00e1e7;
+    box-shadow: 0 0 8px rgba(0, 225, 231, 0.8);
+}
+
+@media (max-width: 600px) {
+    .radio-stations {
+        grid-template-columns: 1fr;
+        max-width: 360px;
+    }
+}
+
+/* ---- Radio Loading Effect ---- */
+.loading-text {
+    display: inline-block;
+    position: relative;
+    color: #ffffff;
+    background: linear-gradient(
+        90deg,
+        #ffffff 0%,
+        #ffffff 35%,
+        #8b5cf6 50%,
+        #ffffff 65%,
+        #ffffff 100%
+    );
+    background-size: 200% auto;
+    background-position: 200% center;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: radioWave 2.5s linear infinite;
+}
+
+@keyframes radioWave {
+    0% {
+        background-position: 200% center;
+    }
+
+    100% {
+        background-position: -200% center;
+    }
+}

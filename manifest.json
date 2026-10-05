@@ -1,14 +1,14 @@
 {
-  "name": "Jailson Webradio",
-  "short_name": "Jailson Webradio",
+  "name": "Radio Player",
+  "short_name": "Player",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#0b0e13",
   "theme_color": "#0b0e13",
   "icons": [
     {
-      "src": "img/cover.png",
-      "sizes": "192x192",
+      "src": "img/app-icon.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]

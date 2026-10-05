@@ -35,16 +35,7 @@ window.addEventListener('load', () => {
     page.setVolume();
 
     const radioName = document.getElementById('radioName');
-    if (radioName) radioName.textContent = RADIO_NAME;
-
     const player = new Player();
-    player.play();
-
-    // Chama a função getStreamingData imediatamente quando a página carrega
-    getStreamingData();
-
-    // Define o intervalo para atualizar os dados de streaming a cada 10 segundos
-    const streamingInterval = setInterval(getStreamingData, 10000);
 
     // A altura da capa é responsabilidade do CSS (aspect-ratio).
 });
@@ -101,13 +92,19 @@ function fetchLyrics(currentArtist, currentSong) {
 // DOM control
 class Page {
     constructor() {
-        this.changeTitlePage = function (title = RADIO_NAME) {
+        //Show title in browser tab
+        this.changeTitlePage = function (title = '') {
+            if (!title) {
+                return;
+            }
+
             document.title = title;
         };
 
         this.refreshCurrentSong = function(song, artist) {
             const currentSong = document.getElementById('currentSong');
             const currentArtist = document.getElementById('currentArtist');
+            currentSong.classList.remove('loading-text');
             const lyricsSong = document.getElementById('lyricsSong');
         
             if (song !== currentSong.textContent || artist !== currentArtist.textContent) { 
@@ -119,7 +116,9 @@ class Page {
                     // Atualizar o conteúdo após o fade-out
                     currentSong.textContent = song; 
                     currentArtist.textContent = artist;
-                    lyricsSong.textContent = song + ' - ' + artist;
+                    currentSong.style.visibility = 'visible';
+                    currentArtist.style.visibility = 'visible';
+                    //lyricsSong.textContent = song + ' - ' + artist;
         
                     // Esmaecer o novo conteúdo (fade-in)
                     currentSong.classList.remove('fade-out');
@@ -179,8 +178,13 @@ class Page {
                 }
 
                 // Aplica a imagem de capa (sempre, mesmo se for a padrão)
-                coverArt.style.backgroundImage = 'url(' + art + ')';
-                coverBackground.style.backgroundImage = 'url(' + cover + ')';
+                if (coverArt) {
+                    coverArt.style.backgroundImage = 'url(' + art + ')';
+                }
+
+                if (coverBackground) {
+                        coverBackground.style.backgroundImage = 'url(' + cover + ')';
+                }
 
                 // Lembra qual capa foi usada para esta música tocando agora,
                 // para o histórico reaproveitar quando ela aparecer lá
@@ -190,8 +194,10 @@ class Page {
                 }
 
                 // Adiciona/remove classes para animação (se necessário)
-                coverArt.classList.add('animated', 'bounceInLeft');
-                setTimeout(() => coverArt.classList.remove('animated', 'bounceInLeft'), 2000);
+                if (coverArt) {
+                    coverArt.classList.add('animated', 'bounceInLeft');
+                    setTimeout(() => coverArt.classList.remove('animated', 'bounceInLeft'), 2000);
+                }
 
                 // Atualiza MediaSession (se suportado)
                 if ('mediaSession' in navigator) {
@@ -254,15 +260,166 @@ class Page {
         };
     }
 }
+//Recently Played
+function updateProxyHistory(history) {
+    const historicContainer = document.getElementById("historicSong");
 
+    if (!historicContainer || !Array.isArray(history)) {
+        return;
+    }
+
+    historicContainer.innerHTML = "";
+
+    const historyArray = history.map((title) => {
+        const parts = title.split(" - ");
+
+        return {
+            song: parts.slice(1).join(" - ") || title,
+            artist: parts[0] || "",
+            youtubeId: ""
+        };
+    });
+
+    const currentSongNorm = normalizeText(
+        document.getElementById("currentSong")?.textContent || ""
+    );
+
+    const currentArtistNorm = normalizeText(
+        document.getElementById("currentArtist")?.textContent || ""
+    );
+
+    const pastSongs = historyArray.filter((item) => {
+        const itemSong = normalizeText(item.song);
+        const itemArtist = normalizeText(item.artist);
+
+        const sameSong =
+            itemSong === currentSongNorm ||
+            itemSong.startsWith(currentSongNorm) ||
+            currentSongNorm.startsWith(itemSong);
+
+        return !(itemArtist === currentArtistNorm && sameSong);
+    });
+
+    const maxSongsToDisplay = 4;
+    const limitedHistory = pastSongs.slice(0, maxSongsToDisplay);
+
+    const page = new Page();
+
+    for (let i = 0; i < limitedHistory.length; i++) {
+        const songInfo = limitedHistory[i];
+
+        const article = document.createElement("article");
+
+        article.classList.add(
+            "animated",
+            "slideInRight"
+        );
+
+        article.innerHTML = `
+            <div class="cover-historic" style="background-image: url('img/cover.png');"></div>
+            <div class="music-info">
+                <div class="song"></div>
+                <div class="artist"></div>
+            </div>
+        `;
+
+        article.querySelector(".song").textContent =
+            songInfo.song || "Desconhecido";
+
+        article.querySelector(".artist").textContent =
+            songInfo.artist || "Desconhecido";
+
+        historicContainer.appendChild(article);
+
+        setTimeout(() => {
+            article.classList.remove(
+                "animated",
+                "slideInRight"
+            );
+        }, 2000);
+
+        try {
+            page.refreshHistoric(
+                songInfo,
+                article
+            );
+        } catch (error) {
+            console.error(
+                "Error refreshing historic song:",
+                error
+            );
+        }
+    }
+}
+//Recently Saved
+function updateSavedSongs(savedSongs) {
+    const savedContainer = document.getElementById("savedSong");
+
+    if (!savedContainer || !Array.isArray(savedSongs)) {
+        return;
+    }
+
+    savedContainer.innerHTML = "";
+
+    const maxSongsToDisplay = 4;
+    const limitedSaved = savedSongs.slice(0, maxSongsToDisplay);
+
+    const page = new Page();
+
+    for (let i = 0; i < limitedSaved.length; i++) {
+        const songInfo = limitedSaved[i];
+
+        const article = document.createElement("article");
+
+        article.classList.add(
+            "animated",
+            "slideInRight"
+        );
+
+        article.innerHTML = `
+            <div class="cover-historic" style="background-image: url('img/cover.png');"></div>
+            <div class="music-info">
+                <div class="song"></div>
+                <div class="artist"></div>
+            </div>
+        `;
+
+        article.querySelector(".song").textContent =
+            songInfo.song || "Desconhecido";
+
+        article.querySelector(".artist").textContent =
+            songInfo.artist || "Desconhecido";
+
+        savedContainer.appendChild(article);
+
+        setTimeout(() => {
+            article.classList.remove(
+                "animated",
+                "slideInRight"
+            );
+        }, 2000);
+
+        try {
+            page.refreshHistoric(
+                songInfo,
+                article
+            );
+        } catch (error) {
+            console.error(
+                "Error refreshing saved song:",
+                error
+            );
+        }
+    }
+}
 
 async function getStreamingData() {
     try {
-        let data = await fetchStreamingData(API_URL);
-        if (!data) {
-            data = await fetchStreamingData(FALLBACK_API_URL);
+        if (currentRadio.id !== 1) {
+            return;
         }
-
+        let data = await fetchStreamingData(API_URL);
+        console.log('RADIO METADATA:', data);
         if (data) {
             // Payload de carregamento: a API acabou de começar a monitorar
             // esta rádio. É um ESTADO, não uma música — mostrar o aviso e
@@ -270,7 +427,7 @@ async function getStreamingData() {
             // intacto para o próximo poll com dados reais processar normal.
             // (O teste da string cobre versões antigas da API sem a flag.)
             if (data.loading || (!data.artist && /^carregando/i.test(data.songtitle || ""))) {
-                document.getElementById("currentSong").textContent = "Carregando...";
+                document.getElementById("currentSong").textContent = "Loading...";
                 document.getElementById("currentArtist").textContent = RADIO_NAME;
                 return;
             }
@@ -301,16 +458,29 @@ async function getStreamingData() {
             if (safeCurrentSong !== musicaAtual) {
                 document.title = `${safeCurrentSong} - ${safeCurrentArtist} | ${RADIO_NAME}`;
 
-                page.refreshCover(safeCurrentSong, safeCurrentArtist, data.albumArt || data.art || null);
+                //page.refreshCover(safeCurrentSong, safeCurrentArtist, data.albumArt || data.art || null);
+                page.refreshCover(safeCurrentSong, safeCurrentArtist, null);
                 page.refreshCurrentSong(safeCurrentSong, safeCurrentArtist);
-                page.refreshLyric(safeCurrentSong, safeCurrentArtist);
+                //page.refreshLyric(safeCurrentSong, safeCurrentArtist);
 
                 const historicContainer = document.getElementById("historicSong");
                 historicContainer.innerHTML = "";
 
                 const historyArray = data.song_history
-                    ? data.song_history.map((item) => ({ song: item.song.title, artist: item.song.artist, youtubeId: item.song.youtubeId || "" }))
-                    : (data.history || []);
+                    ? data.song_history.map((item) => ({
+                        song: item.song.title,
+                        artist: item.song.artist,
+                        youtubeId: item.song.youtubeId || ""
+                    }))
+                    : (data.history || []).map((title) => {
+                        const parts = title.split(' - ');
+
+                        return {
+                            song: parts.slice(1).join(' - ') || title,
+                            artist: parts[0] || '',
+                            youtubeId: ''
+                        };
+                    });
 
                 // A API inclui a música que está tocando agora no topo do
                 // histórico — filtra para não duplicar o now-playing
@@ -342,17 +512,6 @@ async function getStreamingData() {
                       `;
                     article.querySelector(".song").textContent = songInfo.song || "Desconhecido";
                     article.querySelector(".artist").textContent = songInfo.artist || "Desconhecido";
-
-                    // Música com clipe conhecido: o card vira um atalho para
-                    // assistir o vídeo da música que já tocou
-                    if (songInfo.youtubeId) {
-                        article.classList.add("has-clip");
-                        article.title = "Assistir o clipe de " + (songInfo.song || "");
-                        article.addEventListener("click", function () {
-                            playHistoryClip(songInfo);
-                        });
-                    }
-
                     historicContainer.appendChild(article);
                     setTimeout(() => article.classList.remove("animated", "slideInRight"), 2000);
                     try {
@@ -415,45 +574,9 @@ function handleClipTrack(data, song, artist) {
 }
 
 function openClip(track) {
-    if (lastClipShownId === track.id) return;
-    lastClipShownId = track.id;
-
-    const coverBox = document.querySelector('.cover-album');
-    if (!coverBox) return;
-
-    // pausa INTENCIONAL da rádio (o watchdog não deve religar por cima)
-    if (!audio.paused) {
-        clipWasRadioPlaying = true;
-        isIntentionalPause = true;
-        if (reconnectTimeout) clearTimeout(reconnectTimeout);
-        fadeOut(function () { audio.pause(); });
-    }
-
-    // Sincroniza com a rádio: começa no ponto em que a música está.
-    // Aproximado: o stream tem atraso de buffer e o clipe pode ser outra
-    // versão da música (ao vivo vs estúdio).
-    let start = 0;
-    if (track.elapsed) {
-        start = Math.floor(track.elapsed + (Date.now() - track.receivedAt) / 1000);
-        if (track.duration && start >= track.duration - 5) start = 0;
-        if (start < 8) start = 0;
-    }
-
-    coverBox.classList.add('is-clip');
-    const oldFrame = coverBox.querySelector('iframe.clip-frame');
-    if (oldFrame) oldFrame.remove();
-
-    const iframe = document.createElement('iframe');
-    iframe.className = 'clip-frame';
-    iframe.src = 'https://www.youtube-nocookie.com/embed/' + track.id + '?autoplay=1&enablejsapi=1' + (start ? '&start=' + start : '');
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-    iframe.allowFullscreen = true;
-    iframe.title = 'Clipe: ' + (track.song || '');
-    // handshake do widget: o player passa a emitir eventos de estado
-    iframe.addEventListener('load', function () {
-        iframe.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 'clip', channel: 'widget' }), '*');
-    });
-    coverBox.appendChild(iframe);
+    if (!track || !track.id) return;
+    const youtubeUrl = 'https://www.youtube.com/watch?v=' + encodeURIComponent(track.id);
+    window.open(youtubeUrl, '_blank', 'noopener,noreferrer');
 }
 
 function closeClip(resumeRadio) {
@@ -672,6 +795,14 @@ const getDataFromITunes = async (artist, title, defaultArt, defaultCover) => {
 
 // Variável global para armazenar as músicas
 var audio = new Audio(URL_STREAMING);
+//Config stations
+const RADIO_STATIONS = CONFIG.RADIOS || [];
+
+let currentRadio = {
+    id: 'default',
+    name: RADIO_NAME,
+    url: URL_STREAMING
+};
 
 // Player control
 class Player {
@@ -822,6 +953,435 @@ function fadeIn() {
     }, 30);
 }
 
+let metadataAbortController = null;
+
+function stopIcyMetadata() {
+    if (metadataAbortController) {
+        metadataAbortController.abort();
+        metadataAbortController = null;
+    }
+}
+
+async function startIcyMetadata(station) {
+    stopIcyMetadata();
+
+    metadataAbortController = new AbortController();
+    const signal = metadataAbortController.signal;
+
+    try {
+        const response = await fetch(station.url, {
+            headers: {
+                'Icy-MetaData': '1'
+            },
+            signal
+        });
+
+        if (!response.ok || !response.body) {
+            console.error('ICY metadata connection failed:', response.status);
+            return;
+        }
+
+        const metaInt = parseInt(
+            response.headers.get('icy-metaint') || '8192',
+            10
+        );
+
+        const reader = response.body.getReader();
+
+        let audioBytesToSkip = metaInt;
+        let metadataLength = null;
+        let metadataBytesToRead = 0;
+        let metadataBuffer = new Uint8Array(0);
+
+        while (!signal.aborted) {
+            const { value, done } = await reader.read();
+
+            if (done) break;
+            if (!value) continue;
+
+            let offset = 0;
+
+            while (offset < value.length) {
+
+                // Skip audio data
+                if (audioBytesToSkip > 0) {
+                    const skip = Math.min(
+                        audioBytesToSkip,
+                        value.length - offset
+                    );
+
+                    audioBytesToSkip -= skip;
+                    offset += skip;
+                    continue;
+                }
+
+                // First byte after audio = metadata length
+                if (metadataLength === null) {
+                    metadataLength = value[offset] * 16;
+                    offset++;
+
+                    metadataBytesToRead = metadataLength;
+                    metadataBuffer = new Uint8Array(0);
+
+                    if (metadataLength === 0) {
+                        audioBytesToSkip = metaInt;
+                        metadataLength = null;
+                    }
+
+                    continue;
+                }
+
+                // Read metadata bytes
+                const remaining = metadataBytesToRead;
+                const available = value.length - offset;
+                const take = Math.min(remaining, available);
+
+                const chunk = value.slice(offset, offset + take);
+
+                const combined = new Uint8Array(
+                    metadataBuffer.length + chunk.length
+                );
+
+                combined.set(metadataBuffer);
+                combined.set(chunk, metadataBuffer.length);
+
+                metadataBuffer = combined;
+
+                metadataBytesToRead -= take;
+                offset += take;
+
+                // Full metadata received
+                if (metadataBytesToRead === 0) {
+                    const decoder = new TextDecoder('utf-8');
+                    const metadata = decoder.decode(metadataBuffer);
+
+                    const match = metadata.match(
+                        /StreamTitle='([^']*)'/
+                    );
+
+                    if (match && match[1]) {
+                        const streamTitle = match[1].trim();
+
+                        console.log(
+                            'ICY metadata:',
+                            streamTitle
+                        );
+
+                        updateIcyNowPlaying(streamTitle);
+                    }
+
+                    audioBytesToSkip = metaInt;
+                    metadataLength = null;
+                    metadataBuffer = new Uint8Array(0);
+                }
+            }
+        }
+
+    } catch (error) {
+        if (error.name !== 'AbortError') {
+            console.error(
+                'ICY metadata error:',
+                error
+            );
+        }
+    }
+}
+
+function updateIcyNowPlaying(streamTitle) {
+    let artist = '';
+    let song = streamTitle;
+    //To remove aditional information
+    if (currentRadio.id === 1) {
+        const cleanTitle = song
+            .replace(/\.MP3$/i, '')
+            .trim();
+
+        const simorghParts = cleanTitle
+            .split(' - ')
+            .map(part => part.trim())
+            .filter(Boolean);
+
+        if (simorghParts.length >= 2) {
+            // Elahe - Mey-Khooneh
+            // Moein - 04 - Ghasam Be Eshgh
+
+            artist = simorghParts[0];
+
+            let titleParts = simorghParts.slice(1);
+
+            if (/^\d{1,3}$/.test(titleParts[0])) {
+                titleParts.shift();
+            }
+
+            song = titleParts.join(' - ').trim();
+
+        } else {
+            const underscoreParts = cleanTitle
+                .split('_')
+                .map(part => part.trim())
+                .filter(Boolean);
+
+            // Track 01_Dar Gham
+            const trackMatch = cleanTitle.match(
+                /^Track\s*(\d+)[_\s]+(.+)$/i
+            );
+
+            if (trackMatch) {
+                artist = `Track ${trackMatch[1]}`;
+                song = trackMatch[2].trim();
+
+            } else {
+                // Alireza_Ghorbani_Arghavan_ارغوان_علیرضا_قربانی_
+
+                const persianParts = underscoreParts.filter(part =>
+                    /[\u0600-\u06FF]/.test(part)
+                );
+
+                if (persianParts.length >= 3) {
+                    song = persianParts[0];
+                    artist = persianParts.slice(1).join(' ');
+
+                } else {
+                    const persianMatch = cleanTitle.match(
+                        /^(.+?)\s+به\s+/
+                    );
+
+                    if (persianMatch && persianMatch[1]) {
+                        song = persianMatch[1].trim();
+                    } else {
+                        song = cleanTitle
+                            .replace(/_/g, ' ')
+                            .replace(/\s+/g, ' ')
+                            .trim();
+                    }
+                }
+            }
+        }
+    }
+
+    if (streamTitle.includes(' - ')) {
+        const parts = streamTitle.split(' - ');
+
+        artist = parts.shift().trim();
+        song = parts.join(' - ').trim();
+    }
+
+    const currentSongElement =
+        document.getElementById('currentSong');
+
+    const currentArtistElement =
+        document.getElementById('currentArtist');
+
+    if (currentSongElement) {
+        currentSongElement.textContent =
+            song || 'Unknown';
+    }
+
+    if (currentArtistElement) {
+        currentArtistElement.textContent =
+            artist || 'Unknown';
+    }
+
+    startTitleMarquee(currentRadio.name);
+
+    musicaAtual = song;
+}
+//Save favorite track of radio
+function saveCurrentSong() {
+    const song = document.getElementById('currentSong')?.textContent || '';
+    const artist = document.getElementById('currentArtist')?.textContent || '';
+
+    if (!song || song === 'Unknown') {
+        return;
+    }
+
+    const savedSongs = JSON.parse(
+        localStorage.getItem('savedSongs') || '[]'
+    );
+
+    const newSong = {
+        song,
+        artist,
+        radio: currentRadio.name,
+        savedAt: new Date().toISOString()
+    };
+
+    const exists = savedSongs.some(item =>
+        item.song === newSong.song &&
+        item.artist === newSong.artist &&
+        item.radio === newSong.radio
+    );
+
+    if (exists) {
+        return;
+    }
+
+    savedSongs.unshift(newSong);
+
+    const limitedSavedSongs = savedSongs.slice(0, 20);
+
+    localStorage.setItem(
+        'savedSongs',
+        JSON.stringify(limitedSavedSongs)
+    );
+
+    updateSavedSongs(limitedSavedSongs);
+}
+//Connect music button to recently saved
+const saveSongButton = document.querySelector('.ctrl-btn.lyrics');
+
+if (saveSongButton) {
+    saveSongButton.addEventListener('click', () => {
+        saveCurrentSong();
+    });
+}
+
+let titleMarqueeInterval = null;
+let titleMarqueeText = '';
+
+function startTitleMarquee(text) {
+    if (titleMarqueeInterval) {
+        clearInterval(titleMarqueeInterval);
+    }
+
+    titleMarqueeText = `     ${text}     `;
+    let position = 0;
+
+    document.title = titleMarqueeText;
+
+    titleMarqueeInterval = setInterval(() => {
+        position = (position + 1) % titleMarqueeText.length;
+
+        document.title =
+            titleMarqueeText.slice(position) +
+            titleMarqueeText.slice(0, position);
+    }, 300);
+}
+
+let proxyMetadataInterval = null;
+
+function startProxyMetadata(station) {
+    if (proxyMetadataInterval) {
+        clearInterval(proxyMetadataInterval);
+        proxyMetadataInterval = null;
+    }
+
+    if (!station.metadata) {
+        return;
+    }
+
+    async function updateMetadata() {
+        const data = await getProxyMetadata(station.metadata);
+
+        if (!data) {
+            return;
+        }
+
+        if (data.title) {
+            updateIcyNowPlaying(data.title);
+        }
+
+        if (data.history) {
+            updateProxyHistory(data.history);
+        }
+    }
+
+    updateMetadata();
+
+    proxyMetadataInterval = setInterval(
+        updateMetadata,
+        10000
+    );
+}
+
+async function getProxyMetadata(station) {
+    try {
+        const response = await fetch(
+            `http://localhost:3000/metadata/${station}`
+        );
+
+        if (!response.ok) {
+            throw new Error(`Metadata error: ${response.status}`);
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        console.error('Proxy metadata error:', error);
+        return null;
+    }
+}
+
+//Select mood then play radio
+function playAIRadio(mood) {
+    const radioId = window.AI_RADIO_MAP[mood];
+
+    if (!radioId) {
+        return;
+    }
+
+    const index = RADIO_STATIONS.findIndex(function (station) {
+        return station.id === radioId;
+    });
+
+    if (index === -1) {
+        console.error("AI radio not found:", radioId);
+        return;
+    }
+
+    switchRadio(index);
+}
+
+//Switch selected radio
+function switchRadio(index) {
+    const station = RADIO_STATIONS[index];
+
+    if (!station) return;
+
+    const wasPlaying = !audio.paused;
+
+    isIntentionalPause = true;
+
+    if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+    }
+
+    if (fadeInterval) {
+        clearInterval(fadeInterval);
+    }
+
+    audio.pause();
+    stopIcyMetadata();
+    currentRadio = station;
+    musicaAtual = null;
+    document.getElementById('currentSong').textContent = 'Loading...';
+    document.getElementById('currentArtist').textContent = station.name;
+
+    // Play selected radio
+    audio.src = station.url;
+    startProxyMetadata(station);
+
+    audio.play().catch(function (error) {
+    console.error('Playback error:', error);
+    });
+    // Update active radio card
+    const radioStations = document.querySelectorAll('.radio-station');
+
+    radioStations.forEach(function (radio, i) {
+        radio.classList.toggle('active', i === index);
+    });
+
+    // Update radio name
+    const radioName = document.getElementById('radioName');
+
+    if (radioName) {
+        radioName.textContent = station.name;
+    }
+
+    reconnectAttempts = 0;
+
+}
+
 document.getElementById('volume').oninput = function () {
     audio.volume = intToDecimal(this.value);
 
@@ -920,6 +1480,18 @@ function mute() {
 }
 
 document.addEventListener('keydown', function (event) {
+    var target = event.target;
+
+    // Ignore keyboard shortcuts while typing in input fields
+    if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        target.isContentEditable
+    ) {
+        return;
+    }
+
     var key = event.key;
     var slideVolume = document.getElementById('volume');
     var page = new Page();
@@ -931,28 +1503,33 @@ document.addEventListener('keydown', function (event) {
             slideVolume.value = decimalToInt(audio.volume);
             page.changeVolumeIndicator(decimalToInt(audio.volume));
             break;
+
         // Arrow down
         case 'ArrowDown':
             volumeDown();
             slideVolume.value = decimalToInt(audio.volume);
             page.changeVolumeIndicator(decimalToInt(audio.volume));
             break;
-        // Spacebar (preventDefault evita rolar a página junto)
+
+        // Spacebar
         case ' ':
         case 'Spacebar':
             event.preventDefault();
             togglePlay();
             break;
+
         // P
         case 'p':
         case 'P':
             togglePlay();
             break;
+
         // M
         case 'm':
         case 'M':
             mute();
             break;
+
         // Numeric keys 0-9
         case '0':
         case '1':
@@ -970,7 +1547,7 @@ document.addEventListener('keydown', function (event) {
             page.changeVolumeIndicator(volumeValue * 10);
             break;
     }
-}); 
+});
 
 function intToDecimal(vol) {
     return vol / 100;
@@ -1008,3 +1585,47 @@ document.addEventListener('DOMContentLoaded', function () {
         installBtn.hidden = true;
     });
 });
+
+// AI mood analyzer
+
+// AI analyzer
+
+async function detectAI() {
+    const textInput = document.getElementById("moodText");
+    const result = document.getElementById("moodResult");
+
+    const text = textInput.value.trim();
+
+    if (!text) {
+        result.textContent = "Please tell me how you feel.";
+        return;
+    }
+
+    result.textContent = "Analyzing...";
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/api/mood", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                text: text
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+        playAIRadio(data.mood);
+        const mood = window.AI_MOOD_NAMES[data.mood] || "Neutral";
+        result.textContent = "Your mood: " + mood;
+
+    } catch (error) {
+        console.error("AI ERROR:", error);
+
+        result.textContent = "AI ERROR: " + error.message;
+    }
+}

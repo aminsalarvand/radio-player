@@ -1,0 +1,182 @@
+/* AI player box */
+
+.ai-player-box {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(139, 92, 246, 0.18),
+            transparent 55%
+        ),
+        linear-gradient(
+            145deg,
+            #1d1830,
+            #100d19
+        );
+}
+
+
+/* AI content */
+
+.ai-player-content {
+    width: 100%;
+    padding: 24px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+}
+
+
+/* AI icon */
+
+.ai-icon {
+    width: 48px;
+    height: 48px;
+
+    margin: 0 auto 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(139, 92, 246, 0.14);
+
+    color: #a78bfa;
+
+    font-size: 20px;
+}
+
+
+/* AI title */
+
+.ai-player-content h2 {
+    margin: 0 0 8px;
+
+    color: #ffffff;
+
+    font-size: 20px;
+    font-weight: 600;
+}
+
+
+/* AI description */
+
+.ai-player-content p {
+    margin: 0 auto 16px;
+
+    max-width: 280px;
+
+    color: #aaa3b8;
+
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+
+/* AI textarea */
+
+.ai-player-content #moodText {
+    width: 100%;
+    min-height: 75px;
+
+    padding: 11px 12px;
+
+    box-sizing: border-box;
+
+    resize: none;
+
+    border: 1px solid rgba(167, 139, 250, 0.2);
+    border-radius: 10px;
+
+    outline: none;
+
+    background: rgba(5, 4, 10, 0.55);
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 12px;
+    line-height: 1.6;
+
+    transition: 0.2s ease;
+}
+
+
+.ai-player-content #moodText::placeholder {
+    color: #777181;
+}
+
+
+.ai-player-content #moodText:focus {
+    border-color: rgba(167, 139, 250, 0.6);
+
+    box-shadow:
+        0 0 0 3px rgba(139, 92, 246, 0.08);
+}
+
+
+/* AI button */
+
+.ai-player-content #moodButton {
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 10px 14px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: linear-gradient(
+        135deg,
+        #8b5cf6,
+        #6d3df0
+    );
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease;
+}
+
+
+.ai-player-content #moodButton:hover {
+    transform: translateY(-1px);
+
+    filter: brightness(1.08);
+}
+
+
+.ai-player-content #moodButton:active {
+    transform: translateY(0);
+}
+
+
+/* AI result */
+
+.ai-player-content #moodResult {
+    min-height: 20px;
+
+    margin-top: 12px;
+
+    color: #ddd7e8;
+
+    font-size: 13px;
+}

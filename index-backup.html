@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Radio Player</title>
+    <title>Radio Player HTML5 — Player de Rádio Online para Site | Icecast, Shoutcast, Zeno.FM</title>
     <meta name="description" content="Player de rádio HTML5 grátis para o seu site: música tocando agora com capa do álbum, letra da música, histórico, clipe do YouTube e app instalável (PWA). Compatível com Icecast, Shoutcast, Zeno.FM e Azuracast — sem chave de API.">
     <meta name="keywords" content="radio player, player de rádio, rádio online, html5 radio player, web radio, icecast, shoutcast, zeno fm, azuracast, streaming de rádio, now playing, pwa">
     <link rel="canonical" href="https://jailsonsb2.github.io/RadioPlayer/">
@@ -36,7 +36,6 @@
     <link rel="stylesheet" type="text/css" href="css/animate.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="css/ai.css">
 </head>
 
 <body>
@@ -51,81 +50,19 @@
     </button>
 
     <main class="app">
-
         <header class="masthead">
-            <span id="radioName">Player</span>
+            <span id="radioName">Radio Player</span>
         </header>
 
-        <section class="radio-stations">
-            <button type="button" class="radio-station" onclick="switchRadio(0)">
-                <span class="radio-icon">
-                    <i class="fa fa-music"></i>
-                </span>
-                <span class="radio-station-info">
-                    <strong>Radio Simorgh</strong>
-                    <small>Music Radio</small>
-                </span>
-                <span class="radio-live-dot"></span>
-            </button>
-
-            <button type="button" class="radio-station" onclick="switchRadio(1)">
-                <span class="radio-icon">
-                    <i class="fa fa-music"></i>
-                </span>
-                <span class="radio-station-info">
-                    <strong>Radio Navahang</strong>
-                    <small>Persian Music</small>
-                </span>
-                <span class="radio-live-dot"></span>
-            </button>
-
-            <button type="button" class="radio-station" onclick="switchRadio(2)">
-                <span class="radio-icon">
-                    <i class="fa fa-music"></i>
-                </span>
-                <span class="radio-station-info">
-                    <strong>Radio Shadi</strong>
-                    <small>Happy Music</small>
-                </span>
-                <span class="radio-live-dot"></span>
-            </button>
-        </section>
-
         <section class="player">
-<!-- AI mood analyzer -->
-<div class="artwork cover-album ai-player-box">
-    <div class="ai-player-content">
-
-        <div class="ai-icon">
-            <i class="fa fa-magic"></i>
-        </div>
-
-        <h2>How are you feeling?</h2>
-
-        <p>Tell AI how you feel and get a personalized radio experience.</p>
-
-        <textarea
-            id="moodText"
-            placeholder="e.g. I'm feeling sad and want something relaxing..."
-        ></textarea>
-
-        <button id="moodButton" type="button" onclick="detectAI()">
-            <i class="fa fa-magic"></i>
-            Analyze My Mood
-        </button>
-
-        <div id="moodResult"></div>
-
-    </div>
-</div>
+            <div class="artwork cover-album">
+                <div id="currentCoverArt"></div>
+            </div>
 
             <div class="player-info">
                 <span class="live-badge"><span class="live-dot"></span>LIVE</span>
-                <h1 id="currentSong" class="text-uppercase loading-text">
-                    Tune<br>
-                    In
-                </h1>
-                <h2 id="currentArtist" class="text-capitalize" style="visibility: hidden;"></h2>
+                <h1 id="currentSong" class="text-uppercase">Music</h1>
+                <h2 id="currentArtist" class="text-capitalize">Artist</h2>
 
                 <div class="controls">
                     <div class="control-cluster">
@@ -139,15 +76,15 @@
                             </div>
                         </div>
 
-                        <button type="button" class="play-btn" onclick="togglePlay()" aria-label="Play or Pause">
+                        <button type="button" class="play-btn" onclick="togglePlay()" aria-label="Tocar ou pausar">
                             <i id="playerButton" class="fa fa-play"></i>
                         </button>
 
-                        <button type="button" class="ctrl-btn lyrics" title="Lyrics" aria-label="Lyrics">
+                        <button type="button" class="ctrl-btn lyrics" title="Letra da música" aria-label="Letra da música">
                             <i class="fa fa-music"></i>
                         </button>
 
-                        <button type="button" class="ctrl-btn clip-toggle" title="Music Video" aria-label="Music Video" hidden>
+                        <button type="button" class="ctrl-btn clip-toggle" title="Clipe da música" aria-label="Clipe da música" hidden>
                             <i class="fa fa-youtube-play"></i>
                         </button>
                     </div>
@@ -157,7 +94,7 @@
         </section>
 
         <section class="historic">
-            <h2 class="section-title">Recently Played</h2>
+            <h2 class="section-title">Tocadas recentemente</h2>
             <div class="history-list" id="historicSong">
                 <article>
                     <div class="cover-historic"></div>
@@ -166,28 +103,6 @@
                         <div class="artist">Artist</div>
                     </div>
                 </article>
-                <article>
-                    <div class="cover-historic"></div>
-                    <div class="music-info">
-                        <div class="song">Music</div>
-                        <div class="artist">Artist</div>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <section class="historic">
-            <h2 class="section-title">Recently Saved</h2>
-
-            <div class="history-list" id="savedSong">
-                <article>
-                    <div class="cover-historic"></div>
-                    <div class="music-info">
-                        <div class="song">Music</div>
-                        <div class="artist">Artist</div>
-                    </div>
-                </article>
-
                 <article>
                     <div class="cover-historic"></div>
                     <div class="music-info">
@@ -270,7 +185,6 @@
             });
         }
     </script>
-
 </body>
 
 </html>
