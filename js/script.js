@@ -1605,7 +1605,7 @@ async function detectAI() {
 
     try {
         const response = await fetch(
-            "https://radio-player-s12x.onrender.com/api/mood",
+            "http://localhost:3000/api/mood",
             {
                 method: "POST",
                 headers: {
