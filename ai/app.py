@@ -2,6 +2,11 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
+@app.route("/")
+def health():
+    return jsonify({
+        "status": "ok"
+    })
 
 CORS(app, origins=[
     "http://localhost:8080",
