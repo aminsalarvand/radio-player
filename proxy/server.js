@@ -17,92 +17,6 @@ const STREAMS = {
     shadi: 'https://ice9.securenetsystems.net/SHADI?playSessionID=E6B93A54-076D-44EB-20F9B67C13966A59'
 };
 
-const SIMORGH_MOUNT = 'jl8n7thgcdftv';
-
-let simorghMetadata = {
-    title: '',
-    history: []
-};
-
-async function connectSimorghMetadata() {
-    const url = `https://api.zeno.fm/mounts/metadata/subscribe/${SIMORGH_MOUNT}`;
-
-    try {
-        const response = await fetch(url);
-
-        if (!response.ok || !response.body) {
-            throw new Error(`Zeno SSE error: ${response.status}`);
-        }
-
-        console.log('Simorgh metadata connected');
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-
-        let buffer = '';
-
-        while (true) {
-            const { value, done } = await reader.read();
-
-            if (done) {
-                throw new Error('Zeno SSE connection closed');
-            }
-
-            buffer += decoder.decode(value, { stream: true });
-
-            const events = buffer.split('\n\n');
-            buffer = events.pop() || '';
-
-            for (const event of events) {
-                const dataLine = event
-                    .split('\n')
-                    .find(line => line.startsWith('data:'));
-
-                if (!dataLine) {
-                    continue;
-                }
-
-                try {
-                    const data = JSON.parse(
-                        dataLine.substring(5).trim()
-                    );
-
-                    if (data.streamTitle) {
-                    const newTitle = data.streamTitle.trim();
-
-                    if (newTitle !== simorghMetadata.title) {
-                        simorghMetadata.title = newTitle;
-
-                        simorghMetadata.history.unshift(newTitle);
-
-                        simorghMetadata.history =
-                            simorghMetadata.history.slice(0, 10);
-                    }
-
-                    console.log(
-                        'Simorgh:',
-                        simorghMetadata.title
-                    );
-                }
-
-                } catch (error) {
-                    console.error(
-                        'Simorgh metadata parse error:',
-                        error
-                    );
-                }
-            }
-        }
-    } catch (error) {
-        console.error(
-            'Simorgh metadata connection error:',
-            error
-        );
-
-        setTimeout(connectSimorghMetadata, 5000);
-    }
-}
-
 async function getIcyMetadata(url) {
     const response = await fetch(url, {
         headers: {
@@ -123,6 +37,8 @@ async function getIcyMetadata(url) {
     const reader = response.body.getReader();
 
     let audioBytes = metaInt;
+    let metadataLength = null;
+    let metadataBuffer = new Uint8Array(0);
 
     while (true) {
         const { value, done } = await reader.read();
@@ -146,45 +62,67 @@ async function getIcyMetadata(url) {
                 continue;
             }
 
-            const metadataLength = value[offset] * 16;
-            offset++;
+            if (metadataLength === null) {
+                metadataLength = value[offset] * 16;
+                offset++;
 
-            if (metadataLength === 0) {
-                audioBytes = metaInt;
+                if (metadataLength === 0) {
+                    audioBytes = metaInt;
+                    metadataLength = null;
+                    metadataBuffer = new Uint8Array(0);
+                    continue;
+                }
+            }
+
+            const remainingMetadata =
+                metadataLength - metadataBuffer.length;
+
+            const availableBytes =
+                value.length - offset;
+
+            const take = Math.min(
+                remainingMetadata,
+                availableBytes
+            );
+
+            const chunk = value.slice(
+                offset,
+                offset + take
+            );
+
+            const combined = new Uint8Array(
+                metadataBuffer.length + chunk.length
+            );
+
+            combined.set(metadataBuffer);
+            combined.set(chunk, metadataBuffer.length);
+
+            metadataBuffer = combined;
+
+            offset += take;
+
+            if (metadataBuffer.length < metadataLength) {
                 continue;
             }
 
-            if (offset + metadataLength > value.length) {
-                throw new Error('Metadata split across chunks');
-            }
-
-            const metadataBytes = value.slice(
-                offset,
-                offset + metadataLength
+            const metadata = new TextDecoder().decode(
+                metadataBuffer
             );
 
-            offset += metadataLength;
-
-            const metadata = new TextDecoder().decode(metadataBytes);
-
-            const match = metadata.match(/StreamTitle='([^']*)'/);
+            const match = metadata.match(
+                /StreamTitle='([^']*)'/
+            );
 
             if (match && match[1]) {
                 return match[1].trim();
             }
 
             audioBytes = metaInt;
+            metadataLength = null;
+            metadataBuffer = new Uint8Array(0);
         }
     }
 }
-
-app.get('/metadata/simorgh', (req, res) => {
-    res.json({
-        station: 'simorgh',
-        title: simorghMetadata.title,
-        history: simorghMetadata.history
-    });
-});
 
 app.get('/metadata/:station', async (req, res) => {
     const station = req.params.station;
@@ -215,5 +153,4 @@ app.get('/metadata/:station', async (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Metadata proxy running on http://localhost:${PORT}`);
-    connectSimorghMetadata();
 });

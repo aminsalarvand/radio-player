@@ -1605,7 +1605,7 @@ async function detectAI() {
 
     try {
         const response = await fetch(
-            "http://localhost:3000/api/mood",
+            "http://localhost:5001/api/mood",
             {
                 method: "POST",
                 headers: {
