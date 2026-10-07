@@ -1,5 +1,8 @@
 window.RADIO_CONFIG = {
 
+    RADIO_NAME: 'Relaxing Piano',
+    URL_STREAMING: 'https://relaxing-piano.stream.laut.fm/relaxing-piano',
+
     RADIOS: [
         {
             id: 1,
