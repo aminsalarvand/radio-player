@@ -12,6 +12,7 @@ app.use(function (req, res, next) {
 const PORT = 3000;
 
 const STREAMS = {
+    shoma: 'https://n12.radiojar.com/rzcfw4cbsxquv?rj-ttl=5&rj-tok=AAABoRabscAAMNyEN531GZmlYw',
     navahang: 'https://navairan.com/;stream.nsv',
     shadi: 'https://ice9.securenetsystems.net/SHADI?playSessionID=E6B93A54-076D-44EB-20F9B67C13966A59'
 };
