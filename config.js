@@ -3,9 +3,9 @@ window.RADIO_CONFIG = {
     RADIOS: [
         {
             id: 1,
-            name: 'Radio Simorgh',
-            url: 'https://stream.zeno.fm/jl8n7thgcdftv',
-            metadata: 'simorgh'
+            name: 'Radio Shoma',
+            url: 'https://n12.radiojar.com/rzcfw4cbsxquv?rj-ttl=5&rj-tok=AAABoRabscAAMNyEN531GZmlYw',
+            metadata: 'shoma'
         },
         {
             id: 2,
