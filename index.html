@@ -81,32 +81,22 @@
         </section>
 
         <section class="player">
-<!-- AI mood analyzer -->
-<div class="artwork cover-album ai-player-box">
-    <div class="ai-player-content">
-
-        <div class="ai-icon">
-            <i class="fa fa-magic"></i>
-        </div>
-
-        <h2>How are you feeling?</h2>
-
-        <p>Tell AI how you feel and get a personalized radio experience.</p>
-
-        <textarea
-            id="moodText"
-            placeholder="e.g. I'm feeling sad and want something relaxing..."
-        ></textarea>
-
-        <button id="moodButton" type="button" onclick="detectAI()">
-            <i class="fa fa-magic"></i>
-            Analyze My Mood
-        </button>
-
-        <div id="moodResult"></div>
-
-    </div>
-</div>
+            <!-- AI mood analyzer -->
+            <div class="artwork cover-album ai-player-box">
+                <div class="ai-player-content">
+                    <h2>How are you feeling?</h2>
+                    <p>Tell AI how you feel and get a personalized radio experience.</p>
+                    <textarea
+                        id="moodText"
+                        placeholder="e.g. I'm feeling sad and want something relaxing..."
+                    ></textarea>
+                    <button id="moodButton" type="button" onclick="detectAI()">
+                        <i class="fa fa-magic"></i>
+                        Analyze My Mood
+                    </button>
+                    <div id="moodResult"></div>
+                </div>
+            </div>
 
             <div class="player-info">
                 <span class="live-badge"><span class="live-dot"></span>LIVE</span>
