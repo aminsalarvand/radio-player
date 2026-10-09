@@ -27,6 +27,30 @@ window.RADIO_CONFIG = {
             name: 'Relaxing Piano',
             url: 'https://relaxing-piano.stream.laut.fm/relaxing-piano',
             metadata: 'piano'
+        },
+        {
+            id: 5,
+            name: 'Radio Iran',
+            url: 'http://s1.cdn1.iranseda.ir:1935/liveedge/radio-iran/playlist.m3u8',
+            metadata: 'iran'
+        },
+        {
+            id: 6,
+            name: 'Radio Payam',
+            url: 'http://s1.cdn1.iranseda.ir:1935/liveedge/radio-payam/playlist.m3u8',
+            metadata: 'payam'
+        },
+        {
+            id: 7,
+            name: 'Radio Ava',
+            url: 'http://s2.cdn1.iranseda.ir:1935/liveedge/radio-avaa/chunklist_w903692364.m3u8',
+            metadata: 'ava'
+        },
+        {
+            id: 8,
+            name: 'Relaxing Quran',
+            url: 'https://radio.mp3islam.com/listen/abdulbasit/radio.mp3',
+            metadata: 'quran'
         }
     ]
 };
@@ -35,12 +59,20 @@ window.AI_RADIO_MAP = {
     sad: 1,
     calm: 2,
     happy: 3,
-    neutral: 4
+    neutral: 4,
+    narahat: 5,
+    moztareb: 6,
+    khoshal: 7,
+    khonsa:8
 };
 
 window.AI_MOOD_NAMES = {
     sad: "Sad",
     calm: "Calm",
     happy: "Happy",
-    neutral: "Neutral"
+    neutral: "Neutral",
+    narahat: "Narahat",
+    moztareb: "Moztareb",
+    khoshal: "Khoshal",
+    khonsa:"Khonsa"
 };

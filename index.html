@@ -43,41 +43,29 @@
 
         <header class="masthead">
             <span id="radioName">Radio Lahze</span>
+
+            <button
+                type="button"
+                id="trafficModeToggle"
+                class="traffic-mode-toggle"
+                aria-label="Change traffic mode"
+                title="Change traffic mode"
+            >
+                <span id="trafficModeLabel">Business</span>
+            </button>
+
+            <button
+                type="button"
+                id="themeToggle"
+                class="theme-toggle"
+                aria-label="Toggle theme"
+                title="Toggle theme"
+            >
+                <i class="fa fa-sun-o"></i>
+            </button>
         </header>
 
-        <section class="radio-stations">
-            <button type="button" class="radio-station" onclick="switchRadio(0)">
-                <span class="radio-icon">
-                    <i class="fa fa-music"></i>
-                </span>
-                <span class="radio-station-info">
-                    <strong>Radio Shoma</strong>
-                    <small>Music Radio</small>
-                </span>
-                <span class="radio-live-dot"></span>
-            </button>
-
-            <button type="button" class="radio-station" onclick="switchRadio(1)">
-                <span class="radio-icon">
-                    <i class="fa fa-music"></i>
-                </span>
-                <span class="radio-station-info">
-                    <strong>Radio Navahang</strong>
-                    <small>Persian Music</small>
-                </span>
-                <span class="radio-live-dot"></span>
-            </button>
-
-            <button type="button" class="radio-station" onclick="switchRadio(2)">
-                <span class="radio-icon">
-                    <i class="fa fa-music"></i>
-                </span>
-                <span class="radio-station-info">
-                    <strong>Radio Shadi</strong>
-                    <small>Happy Music</small>
-                </span>
-                <span class="radio-live-dot"></span>
-            </button>
+        <section class="radio-stations" id="radioStationsList">
         </section>
 
         <section class="player">

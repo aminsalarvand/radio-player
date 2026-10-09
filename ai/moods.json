@@ -1,0 +1,103 @@
+{
+    "sad": [
+        "sad",
+        "unhappy",
+        "depressed",
+        "upset",
+        "lonely",
+        "down"
+    ],
+    "calm": [
+        "calm",
+        "relaxed",
+        "peaceful",
+        "quiet",
+        "stress",
+        "stressed"
+    ],
+    "happy": [
+        "happy",
+        "joy",
+        "good",
+        "great",
+        "excited",
+        "energetic",
+        "cheerful"
+    ],
+    "neutral": [
+        "neutral",
+        "unknown",
+        "unsure",
+        "not sure",
+        "dont know",
+        "no idea",
+        "cant tell",
+        "uncertain",
+        "no particular feeling",
+        "no strong feelings",
+        "nothing",
+        "whatever",
+        "i dont care",
+        "not feeling anything",
+        "hard to say"
+    ],
+    "narahat": [
+        "narahat",
+        "delgir",
+        "ghamgin",
+        "afsorde",
+        "deltang",
+        "delkhoon",
+        "pareshan",
+        "azorde",
+        "naranj",
+        "delshikaste",
+        "geryoon",
+        "gerye",
+        "tanha",
+        "bihal",
+        "badhal"
+    ],
+    "moztareb": [
+        "moztareb",
+        "negaran",
+        "delvapas",
+        "ashofte",
+        "por estres",
+        "estres",
+        "nervous",
+        "anxious",
+        "worried",
+        "stressful",
+        "bi gharar",
+        "tashvish",
+        "havas parishan"
+    ],
+    "khoshal": [
+        "khoshal",
+        "khoshhal",
+        "shad",
+        "khorsand",
+        "delshad",
+        "sargarm",
+        "porenergy",
+        "ba neshat"
+    ],
+    "khonsa": [
+        "khonsa",
+        "mamooli",
+        "adi",
+        "normal",
+        "mamooliam",
+        "farghi nadare",
+        "bad nist",
+        "na khoob na bad",
+        "moteadel",
+        "bi tafavot",
+        "ok",
+        "fine",
+        "average",
+        "so so",
+        "nothing special"
+    ]
+}

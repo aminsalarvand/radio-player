@@ -14,7 +14,12 @@ const PORT = 3000;
 const STREAMS = {
     shoma: 'https://n12.radiojar.com/rzcfw4cbsxquv?rj-ttl=5&rj-tok=AAABoRabscAAMNyEN531GZmlYw',
     navahang: 'https://navairan.com/;stream.nsv',
-    shadi: 'https://ice9.securenetsystems.net/SHADI?playSessionID=E6B93A54-076D-44EB-20F9B67C13966A59'
+    shadi: 'https://ice9.securenetsystems.net/SHADI?playSessionID=E6B93A54-076D-44EB-20F9-B67C13966A59',
+    piano: 'https://relaxing-piano.stream.laut.fm/relaxing-piano',
+    iran: 'http://s1.cdn1.iranseda.ir:1935/liveedge/radio-iran/playlist.m3u8',
+    payam: 'http://s1.cdn1.iranseda.ir:1935/liveedge/radio-payam/playlist.m3u8',
+    ava: 'http://s2.cdn1.iranseda.ir:1935/liveedge/radio-avaa/chunklist_w903692364.m3u8',
+    quran: 'https://radio.mp3islam.com/listen/abdulbasit/radio.mp3'
 };
 
 async function getIcyMetadata(url) {
@@ -28,6 +33,9 @@ async function getIcyMetadata(url) {
     if (!response.ok || !response.body) {
         throw new Error(`Stream error: ${response.status}`);
     }
+
+    console.log('Stream URL:', url);
+    console.log('ICY-MetaInt:', response.headers.get('icy-metaint'));
 
     const metaInt = parseInt(
         response.headers.get('icy-metaint') || '8192',

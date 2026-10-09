@@ -847,8 +847,7 @@ audio.onplay = function () {
     setPlayerIcon('fa fa-pause', 'PAUSAR');
 }
 
-// On pause, change the button to play (a menos que estejamos exibindo o
-// spinner de reconexão, que também pausa o áudio momentaneamente)
+// On pause, change the button to play
 audio.onpause = function () {
     if (!isIntentionalPause && reconnectAttempts > 0) return;
     setPlayerIcon('fa fa-play', 'PLAY');
@@ -1336,20 +1335,18 @@ function playAIRadio(mood) {
 function switchRadio(index) {
     const station = RADIO_STATIONS[index];
 
-    if (!station) return;
-
+    if (!station) 
+        return;
     const wasPlaying = !audio.paused;
-
     isIntentionalPause = true;
 
     if (reconnectTimeout) {
         clearTimeout(reconnectTimeout);
     }
-
+    
     if (fadeInterval) {
         clearInterval(fadeInterval);
     }
-
     audio.pause();
     stopIcyMetadata();
     currentRadio = station;
@@ -1586,8 +1583,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// AI mood analyzer
-
 // AI analyzer
 
 async function detectAI() {
@@ -1637,4 +1632,35 @@ async function detectAI() {
         result.textContent =
             "AI ERROR: " + error.message;
     }
+}
+
+
+//Change theme 
+const themeToggle = document.getElementById('themeToggle');
+
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light-mode');
+
+    const icon = themeToggle.querySelector('i');
+
+    if (document.body.classList.contains('light-mode')) {
+        icon.className = 'fa fa-moon-o';
+    } else {
+        icon.className = 'fa fa-sun-o';
+    }
+});
+
+// Business / Economy mode toggle
+const trafficModeToggle = document.getElementById('trafficModeToggle');
+const trafficModeLabel = document.getElementById('trafficModeLabel');
+
+if (trafficModeToggle && trafficModeLabel) {
+    trafficModeToggle.addEventListener('click', function () {
+        const economyMode = trafficModeLabel.textContent.trim() === 'Business';
+
+        trafficModeLabel.textContent = economyMode ? 'Economy' : 'Business';
+
+        // Economy plays Radio Quran; Business plays Relaxing Piano.
+        switchRadio(economyMode ? 7 : 3);
+    });
 }

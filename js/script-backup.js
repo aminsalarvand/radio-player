@@ -850,8 +850,6 @@ function togglePlay() {
         });
     } else {
         pauseYouTubeEmbeds();
-        // Voltar para a rádio desliga o modo clipe — sem isso, a próxima
-        // troca de música reabria o vídeo por cima do áudio
         exitClipMode();
         isIntentionalPause = false;
         fadeIn();
