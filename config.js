@@ -1,9 +1,14 @@
 window.RADIO_CONFIG = {
-
     RADIO_NAME: 'Radio Lahze',
-    URL_STREAMING: 'http://sarcheshmeh.icdndhcp.com:18452/stream',
+    URL_STREAMING: 'http://www.radiofaaz.com:8000/radiofaaz',
 
     RADIOS: [
+        {
+            id: 0,
+            name: 'Radio Lahze',
+            url: 'http://www.radiofaaz.com:8000/radiofaaz',
+            metadata: 'lahze'
+        },
         {
             id: 1,
             name: 'Radio Shoma',
@@ -55,6 +60,11 @@ window.RADIO_CONFIG = {
     ]
 };
 
+// Assign mode automatically based on station ID.
+window.RADIO_CONFIG.RADIOS.forEach(station => {
+    station.mode = station.id <= 4 ? 'Business' : 'Economy';
+});
+
 window.AI_RADIO_MAP = {
     sad: 1,
     calm: 2,
@@ -63,16 +73,16 @@ window.AI_RADIO_MAP = {
     narahat: 5,
     moztareb: 6,
     khoshal: 7,
-    khonsa:8
+    khonsa: 8
 };
 
 window.AI_MOOD_NAMES = {
-    sad: "Sad",
-    calm: "Calm",
-    happy: "Happy",
-    neutral: "Neutral",
-    narahat: "Narahat",
-    moztareb: "Moztareb",
-    khoshal: "Khoshal",
-    khonsa:"Khonsa"
+    sad: 'Sad',
+    calm: 'Calm',
+    happy: 'Happy',
+    neutral: 'Neutral',
+    narahat: 'Narahat',
+    moztareb: 'Moztareb',
+    khoshal: 'Khoshal',
+    khonsa: 'Khonsa'
 };

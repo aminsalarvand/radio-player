@@ -1096,18 +1096,18 @@ function updateIcyNowPlaying(streamTitle) {
             .replace(/\.MP3$/i, '')
             .trim();
 
-        const simorghParts = cleanTitle
+        const radioParts = cleanTitle
             .split(' - ')
             .map(part => part.trim())
             .filter(Boolean);
 
-        if (simorghParts.length >= 2) {
+        if (radioParts.length >= 2) {
             // Elahe - Mey-Khooneh
             // Moein - 04 - Ghasam Be Eshgh
 
-            artist = simorghParts[0];
+            artist = radioParts[0];
 
-            let titleParts = simorghParts.slice(1);
+            let titleParts = radioParts.slice(1);
 
             if (/^\d{1,3}$/.test(titleParts[0])) {
                 titleParts.shift();
@@ -1264,6 +1264,10 @@ function startProxyMetadata(station) {
     if (proxyMetadataInterval) {
         clearInterval(proxyMetadataInterval);
         proxyMetadataInterval = null;
+    }
+
+    if (station.mode === 'Economy') {
+        return;
     }
 
     if (!station.metadata) {
@@ -1658,10 +1662,8 @@ const trafficModeLabel = document.getElementById('trafficModeLabel');
 if (trafficModeToggle && trafficModeLabel) {
     trafficModeToggle.addEventListener('click', function () {
         const economyMode = trafficModeLabel.textContent.trim() === 'Business';
-
         trafficModeLabel.textContent = economyMode ? 'Economy' : 'Business';
-
         // Economy plays Tehran Music; Business plays Source Radio.
-        switchRadio(economyMode ? 7 : 0);
+        switchRadio(economyMode ? 8 : 0);
     });
 }

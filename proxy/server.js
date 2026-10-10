@@ -37,10 +37,14 @@ async function getIcyMetadata(url) {
     console.log('Stream URL:', url);
     console.log('ICY-MetaInt:', response.headers.get('icy-metaint'));
 
-    const metaInt = parseInt(
-        response.headers.get('icy-metaint') || '8192',
-        10
-    );
+    const icyMetaInt = response.headers.get('icy-metaint');
+
+    if (!icyMetaInt) {
+        await response.body.cancel();
+        throw new Error('ICY metadata is not supported by this stream');
+    }
+
+    const metaInt = parseInt(icyMetaInt, 10);
 
     const reader = response.body.getReader();
 
