@@ -795,6 +795,7 @@ const getDataFromITunes = async (artist, title, defaultArt, defaultCover) => {
 
 // Variável global para armazenar as músicas
 var audio = new Audio(URL_STREAMING);
+
 //Config stations
 const RADIO_STATIONS = CONFIG.RADIOS || [];
 
@@ -1660,7 +1661,7 @@ if (trafficModeToggle && trafficModeLabel) {
 
         trafficModeLabel.textContent = economyMode ? 'Economy' : 'Business';
 
-        // Economy plays Radio Quran; Business plays Relaxing Piano.
-        switchRadio(economyMode ? 7 : 3);
+        // Economy plays Tehran Music; Business plays Source Radio.
+        switchRadio(economyMode ? 7 : 0);
     });
 }

@@ -1,7 +1,7 @@
 window.RADIO_CONFIG = {
 
-    RADIO_NAME: 'Relaxing Piano',
-    URL_STREAMING: 'https://relaxing-piano.stream.laut.fm/relaxing-piano',
+    RADIO_NAME: 'Radio Lahze',
+    URL_STREAMING: 'http://sarcheshmeh.icdndhcp.com:18452/stream',
 
     RADIOS: [
         {
@@ -48,9 +48,9 @@ window.RADIO_CONFIG = {
         },
         {
             id: 8,
-            name: 'Relaxing Quran',
-            url: 'https://radio.mp3islam.com/listen/abdulbasit/radio.mp3',
-            metadata: 'quran'
+            name: 'Tehran Music',
+            url: 'https://live.iranradio.ir:8000/live-en.mp3',
+            metadata: 'teh'
         }
     ]
 };
