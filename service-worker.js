@@ -1,9 +1,9 @@
-const CACHE_NAME = "player-v8";
+const CACHE_NAME = "player-v10";
 
 const urlsToCache = [
     "./",
     "./index.html",
-    "./config.js",
+    "./js/config.js",
 
     "./css/style.css",
     "./css/ai.css",

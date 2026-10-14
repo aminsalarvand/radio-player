@@ -53,6 +53,22 @@ body {
     background: url('../img/cover.png') center / cover no-repeat;
     filter: blur(64px) saturate(140%);
     transform: scale(1.4);
+    transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+body.light-mode #bgCover {
+    opacity: 0.18;
+    filter: blur(64px) saturate(70%);
+}
+
+body.light-mode .cover-album {
+    filter: brightness(1.12) saturate(0.75);
+    border-color: rgba(255, 255, 255, 0.75);
+    box-shadow: 0 18px 45px rgba(50, 65, 85, 0.18);
+}
+
+body.light-mode #currentCoverArt {
+    background-color: rgba(255, 255, 255, 0.18);
 }
 
 .bg-overlay {
@@ -92,23 +108,32 @@ body {
 .traffic-mode-toggle {
     position: absolute;
     left: 0;
-    height: 30px;
-    padding: 0 10px;
+    height: 34px;
+    padding: 0 14px;
     border: 1px solid var(--border);
     border-radius: 999px;
     background: var(--surface);
-    color: var(--text-muted);
+    color: var(--text);
     font-family: inherit;
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight: 700;
+    letter-spacing: 0.09em;
     cursor: pointer;
-    transition: 0.2s ease;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
 .traffic-mode-toggle:hover {
-    color: var(--text);
+    background: var(--surface-strong);
+    border-color: var(--text-muted);
     transform: translateY(-1px);
+}
+
+.traffic-mode-toggle:active {
+    transform: scale(0.96);
 }
 
 /* ---- theme ---- */
@@ -117,31 +142,95 @@ body {
     position: absolute;
     right: 0;
     margin-top: 0;
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
     border: 1px solid var(--border);
     border-radius: 50%;
     background: var(--surface);
-    color: var(--text-muted);
+    color: var(--text);
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 15px;
     cursor: pointer;
-    transition: 0.2s ease;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
 .theme-toggle:hover {
-    color: var(--text);
-    transform: translateY(-1px);
+    background: var(--surface-strong);
+    border-color: var(--text-muted);
+    transform: rotate(12deg);
 }
 
+.theme-toggle:active {
+    transform: scale(0.92);
+}
+
+.traffic-mode-toggle:focus-visible,
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--text-muted);
+    outline-offset: 3px;
+}
+
+/* ---- light mode ---- */
+
 body.light-mode {
-    --bg: #f4f6f8;
-    --text: #111827;
-    --text-muted: rgba(17, 24, 39, 0.62);
-    --surface: rgba(17, 24, 39, 0.06);
-    --surface-strong: rgba(17, 24, 39, 0.12);
-    --border: rgba(17, 24, 39, 0.12);
+    --bg: #e9edf2;
+    --text: #202938;
+    --text-muted: rgba(32, 41, 56, 0.68);
+
+    --surface: rgba(255, 255, 255, 0.38);
+    --surface-strong: rgba(255, 255, 255, 0.58);
+
+    --border: rgba(255, 255, 255, 0.65);
+
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* Main app: transparent glass look */
+body.light-mode .app {
+    background: transparent;
+    color: var(--text);
+}
+
+/* Header and radio stations */
+body.light-mode .masthead,
+body.light-mode .radio-stations {
+    border-color: var(--border);
+}
+
+/* Business / Economy button */
+body.light-mode .traffic-mode-toggle {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+body.light-mode .traffic-mode-toggle:hover {
+    background: var(--surface-strong);
+}
+
+/* Day / night button */
+body.light-mode .theme-toggle {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+body.light-mode .theme-toggle:hover {
+    background: var(--surface-strong);
+}
+
+/* Keep secondary text readable */
+body.light-mode .radio-stations,
+body.light-mode .radio-stations * {
+    border-color: var(--border);
 }
 
 /* ---- player ---- */
@@ -162,7 +251,15 @@ body.light-mode {
     flex: none;
     border-radius: 24px;
     background: url('../img/cover.png') center / cover no-repeat;
-    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
+}
+
+/* Glass appearance in light mode */
+body.light-mode .cover-album {
+    border-color: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 18px 45px rgba(50, 65, 85, 0.18);
 }
 
 #currentCoverArt {
@@ -308,7 +405,7 @@ body.light-mode {
 /* ---- volume: botão circular + popover (escondido no celular: botões físicos) ---- */
 
 .volume-wrap {
-    display: none;
+    display: flex;
     position: relative;
 }
 

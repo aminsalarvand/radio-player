@@ -72,15 +72,15 @@
             <!-- AI mood analyzer -->
             <div class="artwork cover-album ai-player-box">
                 <div class="ai-player-content">
-                    <h2>How are you feeling?</h2>
-                    <p>Tell AI how you feel and get a personalized radio experience.</p>
+                    <h2>Your Mode. Your radio.</h2>
+                    <p>Music that matches your mode.</p>
                     <textarea
                         id="moodText"
                         placeholder="e.g. I'm feeling sad and want something relaxing..."
                     ></textarea>
                     <button id="moodButton" type="button" onclick="detectAI()">
                         <i class="fa fa-magic"></i>
-                        Analyze My Mood
+                        Find my mode
                     </button>
                     <div id="moodResult"></div>
                 </div>
@@ -88,10 +88,7 @@
 
             <div class="player-info">
                 <span class="live-badge"><span class="live-dot"></span>LIVE</span>
-                <h1 id="currentSong" class="text-uppercase loading-text">
-                    Tune<br>
-                    In
-                </h1>
+                <h1 id="currentSong" class="text-uppercase loading-text">Radio Lahze</h1>
                 <h2 id="currentArtist" class="text-capitalize" style="visibility: hidden;"></h2>
 
                 <div class="controls">
@@ -165,11 +162,6 @@
             </div>
         </section>
 
-        <footer class="partner">
-            <a href="https://www.radios.com.br/aovivo/jalson-web-radio/290164" target="_blank" rel="noopener">
-                <img src="img/radiosnet.png" alt="Ouça nossa rádio com RadiosNet — baixe agora o app" width="234" height="60">
-            </a>
-        </footer>
     </main>
 
     <div id="modalLyrics" role="dialog" aria-modal="true" aria-labelledby="lyricsSong" aria-hidden="true">
@@ -184,8 +176,10 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="config.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
     <script type="text/javascript" src="js/script.js"></script>
+    <script type="text/javascript" src="js/think.js"></script>
+    
     <script>
         // Modal de letra (o script sinaliza que há letra disponível
         // colocando data-toggle no botão .lyrics)

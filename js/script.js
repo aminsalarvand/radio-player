@@ -420,15 +420,11 @@ async function getStreamingData() {
         }
         let data = await fetchStreamingData(API_URL);
         console.log('RADIO METADATA:', data);
+
         if (data) {
-            // Payload de carregamento: a API acabou de começar a monitorar
-            // esta rádio. É um ESTADO, não uma música — mostrar o aviso e
-            // NÃO buscar capa/letra de "Carregando...". musicaAtual fica
-            // intacto para o próximo poll com dados reais processar normal.
-            // (O teste da string cobre versões antigas da API sem a flag.)
             if (data.loading || (!data.artist && /^carregando/i.test(data.songtitle || ""))) {
-                document.getElementById("currentSong").textContent = "Loading...";
-                document.getElementById("currentArtist").textContent = RADIO_NAME;
+                document.getElementById("currentSong").textContent = currentRadio ? currentRadio.name : "";
+                document.getElementById("currentArtist").textContent = "";
                 return;
             }
 
@@ -1301,7 +1297,7 @@ function startProxyMetadata(station) {
 async function getProxyMetadata(station) {
     try {
         const response = await fetch(
-            `http://localhost:3000/metadata/${station}`
+            `http://localhost:3003/metadata/${station}`
         );
 
         if (!response.ok) {
@@ -1355,12 +1351,31 @@ function switchRadio(index) {
     audio.pause();
     stopIcyMetadata();
     currentRadio = station;
+    //Change Business/Economy label
+    const trafficModeLabel = document.getElementById('trafficModeLabel');
+    if (trafficModeLabel && station.mode) {
+        trafficModeLabel.textContent = station.mode;
+    }
+    //For find think
+    if (window.think) {
+        window.think.log("station_change", {
+            stationId: station.id,
+            stationName: station.name
+        });
+    }
+    
     musicaAtual = null;
-    document.getElementById('currentSong').textContent = 'Loading...';
-    document.getElementById('currentArtist').textContent = station.name;
+    document.getElementById('currentSong').textContent = station.name;
+    document.getElementById('currentArtist').textContent = '';
 
     // Play selected radio
-    audio.src = station.url;
+    const mp3Streams = {
+        5: "http://127.0.0.1:3002/varzesh.mp3",
+        6: "http://127.0.0.1:3002/javan.mp3",
+        7: "http://127.0.0.1:3002/live.mp3"
+    };
+
+    audio.src = mp3Streams[Number(station.id)] || station.url;
     startProxyMetadata(station);
 
     audio.play().catch(function (error) {
@@ -1377,7 +1392,7 @@ function switchRadio(index) {
     const radioName = document.getElementById('radioName');
 
     if (radioName) {
-        radioName.textContent = station.name;
+        radioName.textContent = 'Radio Mode';
     }
 
     reconnectAttempts = 0;
@@ -1588,6 +1603,36 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+function setAIVolume(mood) {
+    const AI_MOOD_VOLUME = {
+        sad: 30,
+        stress: 40,
+        happy: 70,
+        neutral: 50,
+        narahat: 30,
+        moztareb: 40,
+        khoshal: 70,
+        khonsa: 50
+    };
+
+    const volume = AI_MOOD_VOLUME[mood];
+    if (volume === undefined) return;
+
+    audio.volume = volume / 100;
+
+    const slider = document.getElementById("volume");
+    const indicator = document.getElementById("volIndicator");
+
+    if (slider) slider.value = volume;
+    if (indicator) indicator.textContent = volume;
+
+    try {
+        localStorage.setItem("volume", String(volume));
+    } catch (error) {
+        console.warn("Could not save volume:", error);
+    }
+}
+
 // AI analyzer
 
 async function detectAI() {
@@ -1624,6 +1669,7 @@ async function detectAI() {
         const data = await response.json();
 
         playAIRadio(data.mood);
+        setAIVolume(data.mood);
 
         const mood =
             window.AI_MOOD_NAMES[data.mood] || "Neutral";
