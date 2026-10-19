@@ -1,13 +1,13 @@
 window.RADIO_CONFIG = {
-    RADIO_NAME: 'Radio Lahze',
-    URL_STREAMING: 'http://www.radiofaaz.com:8000/radiofaaz',
+    RADIO_NAME: 'Radio Safar',
+    URL_STREAMING: 'https://n0b.radiojar.com/pyea7q9h5ehvv',
 
     RADIOS: [
         {
             id: 0,
-            name: 'Radio Lahze',
-            url: 'http://www.radiofaaz.com:8000/radiofaaz',
-            metadata: 'faaz'
+            name: 'Radio Safar',
+            url: 'https://n0b.radiojar.com/pyea7q9h5ehvv',
+            metadata: 'safar'
         },
         {
             id: 1,
