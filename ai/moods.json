@@ -7,13 +7,11 @@
         "lonely",
         "down"
     ],
-    "stress": [
+    "relax": [
         "calm",
         "relaxed",
         "peaceful",
-        "quiet",
-        "stress",
-        "stressed"
+        "quiet"
     ],
     "happy": [
         "happy",
@@ -24,22 +22,24 @@
         "energetic",
         "cheerful"
     ],
-    "neutral": [
-        "neutral",
-        "unknown",
-        "unsure",
-        "not sure",
-        "dont know",
-        "no idea",
-        "cant tell",
-        "uncertain",
-        "no particular feeling",
-        "no strong feelings",
-        "nothing",
-        "whatever",
-        "i dont care",
-        "not feeling anything",
-        "hard to say"
+    "anxious": [
+        "anxious",
+        "nervous",
+        "worried",
+        "stressed",
+        "stressful",
+        "uneasy",
+        "tense",
+        "restless",
+        "overwhelmed",
+        "afraid",
+        "scared",
+        "panicked",
+        "under pressure",
+        "feeling anxious",
+        "feeling nervous",
+        "feeling worried",
+        "feeling stressed"
     ],
     "narahat": [
         "narahat",
@@ -65,10 +65,6 @@
         "ashofte",
         "por estres",
         "estres",
-        "nervous",
-        "anxious",
-        "worried",
-        "stressful",
         "bi gharar",
         "tashvish",
         "havas parishan"
@@ -87,17 +83,11 @@
         "khonsa",
         "mamooli",
         "adi",
-        "normal",
         "mamooliam",
         "farghi nadare",
         "bad nist",
         "na khoob na bad",
         "moteadel",
-        "bi tafavot",
-        "ok",
-        "fine",
-        "average",
-        "so so",
-        "nothing special"
+        "bi tafavot"
     ]
 }

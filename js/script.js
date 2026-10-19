@@ -1332,6 +1332,26 @@ function playAIRadio(mood) {
     switchRadio(index);
 }
 
+//Select input from mode then play radio
+function playMatchingRadio() {
+    const inputs = document.querySelectorAll(".slider-card input");
+
+    if (inputs.length < 4) {
+        console.error("Expected four mood sliders.");
+        return;
+    }
+
+    const result = window.engine.decideMood({
+        happiness: inputs[0].value,
+        sadness: inputs[1].value,
+        calmness: inputs[2].value,
+        stress: inputs[3].value
+    });
+
+    playAIRadio(result.mood);
+    setAIVolume(result.mood);
+}
+
 //Switch selected radio
 function switchRadio(index) {
     const station = RADIO_STATIONS[index];
@@ -1671,11 +1691,9 @@ async function detectAI() {
         playAIRadio(data.mood);
         setAIVolume(data.mood);
 
-        const mood =
-            window.AI_MOOD_NAMES[data.mood] || "Neutral";
+        const mood = window.AI_MOOD_NAMES[data.mood];
 
-        result.textContent =
-            "Your mood: " + mood;
+        result.textContent = "Your mood: " + mood;
 
     } catch (error) {
         console.error("AI ERROR:", error);
@@ -1713,3 +1731,99 @@ if (trafficModeToggle && trafficModeLabel) {
         switchRadio(economyMode ? 8 : 0);
     });
 }
+
+// Connect glass radio player controls
+(function () {
+    function initGlassRadioPlayer() {
+        const radioName = document.getElementById("glassRadioName");
+        const radioMode = document.getElementById("glassRadioMode");
+        const playButton = document.getElementById("glassRadioPlay");
+        const pauseButton = document.getElementById("glassRadioPause");
+        const volumeSlider = document.getElementById("glassRadioVolume");
+        const volumeValue = document.getElementById("glassRadioVolumeValue");
+
+        if (
+            !radioName ||
+            !radioMode ||
+            !playButton ||
+            !pauseButton ||
+            !volumeSlider ||
+            !volumeValue ||
+            typeof audio === "undefined"
+        ) {
+            return;
+        }
+
+        function updateStationName() {
+            if (typeof currentRadio !== "undefined" && currentRadio) {
+                radioName.textContent = currentRadio.name;
+                radioMode.textContent = "Radio";
+            }
+        }
+
+        function updateVolumeDisplay() {
+            const volume = Number(volumeSlider.value);
+            audio.volume = volume / 100;
+            volumeValue.textContent = `${volume}%`;
+        }
+
+        playButton.addEventListener("click", function () {
+            if (typeof currentRadio !== "undefined" && currentRadio) {
+                audio.play().catch(function (error) {
+                    console.error("Playback error:", error);
+                });
+            } else if (typeof playMatchingRadio === "function") {
+                playMatchingRadio();
+            }
+        });
+
+        pauseButton.addEventListener("click", function () {
+            audio.pause();
+        });
+
+        volumeSlider.addEventListener("input", updateVolumeDisplay);
+
+        audio.addEventListener("play", function () {
+            playButton.classList.add("active");
+            pauseButton.classList.remove("active");
+            updateStationName();
+        });
+
+        audio.addEventListener("pause", function () {
+            pauseButton.classList.add("active");
+            playButton.classList.remove("active");
+        });
+
+        audio.addEventListener("volumechange", function () {
+            const volume = Math.round(audio.volume * 100);
+            volumeSlider.value = volume;
+            volumeValue.textContent = `${volume}%`;
+        });
+
+        // Keep the station name synchronized when the radio changes
+        const originalSwitchRadio = window.switchRadio;
+
+        if (
+            typeof originalSwitchRadio === "function" &&
+            !originalSwitchRadio._glassConnected
+        ) {
+            const connectedSwitchRadio = function (index) {
+                originalSwitchRadio(index);
+                updateStationName();
+            };
+
+            connectedSwitchRadio._glassConnected = true;
+            window.switchRadio = connectedSwitchRadio;
+        }
+
+        volumeSlider.value = Math.round(audio.volume * 100);
+        updateVolumeDisplay();
+        updateStationName();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initGlassRadioPlayer);
+    } else {
+        initGlassRadioPlayer();
+    }
+})();

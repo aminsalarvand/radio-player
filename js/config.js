@@ -67,9 +67,9 @@ window.RADIO_CONFIG.RADIOS.forEach(station => {
 
 window.AI_RADIO_MAP = {
     sad: 1,
-    stress: 2,
+    relax: 2,
     happy: 3,
-    neutral: 4,
+    anxious: 4,
     narahat: 5,
     moztareb: 6,
     khoshal: 7,
@@ -78,9 +78,9 @@ window.AI_RADIO_MAP = {
 
 window.AI_MOOD_NAMES = {
     sad: 'Sad',
-    stress: 'stress',
+    relax: 'Relax',
     happy: 'Happy',
-    neutral: 'Neutral',
+    anxious: 'Anxious',
     narahat: 'Narahat',
     moztareb: 'Moztareb',
     khoshal: 'Khoshal',

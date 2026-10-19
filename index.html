@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="utf-8">
     <meta
         name="viewport"
@@ -36,13 +37,21 @@
     </div>
 
     <button type="button" id="installPwaBtn" class="install-btn" hidden>
-        <i class="fa fa-download"></i> Instalar app
+        <i class="fa fa-download"></i> Install app
     </button>
 
     <main class="app">
 
         <header class="masthead">
-            <span id="radioName">Radio Lahze</span>
+            <button
+                type="button"
+                id="modeTrigger"
+                class="mode-trigger"
+                aria-controls="modeOverlay"
+                aria-expanded="false"
+            >
+                Mode
+            </button>
 
             <button
                 type="button"
@@ -64,6 +73,103 @@
                 <i class="fa fa-sun-o"></i>
             </button>
         </header>
+
+        <div class="mode-overlay" id="modeOverlay" hidden>
+    <section class="glass-panel">
+        <header class="panel-header">
+            <button type="button" class="close-button" id="closePanel"
+                    aria-label="Close panel">×</button>
+        </header>
+        <!-- Add the glass menu here -->
+        <div class="sliders">
+            <label class="slider-card happy">
+                <span class="slider-label">Happy</span>
+                <div class="slider-track">
+                    <input type="range" min="0" max="100" value="65">
+                </div>
+                <output class="slider-value">65%</output>
+            </label>
+
+            <label class="slider-card sad">
+                <span class="slider-label">Sad</span>
+                <div class="slider-track">
+                    <input type="range" min="0" max="100" value="25">
+                </div>
+                <output class="slider-value">25%</output>
+            </label>
+
+            <label class="slider-card calm">
+                <span class="slider-label">Calm</span>
+                <div class="slider-track">
+                    <input type="range" min="0" max="100" value="75">
+                </div>
+                <output class="slider-value">75%</output>
+            </label>
+
+            <label class="slider-card anxious">
+                <span class="slider-label">Anxious</span>
+                <div class="slider-track">
+                    <input type="range" min="0" max="100" value="20">
+                </div>
+                <output class="slider-value">20%</output>
+            </label>
+        </div>
+        <!-- Glass Radio Player Controls -->
+        <div class="glass-radio-player">
+
+            <div class="glass-radio-info">
+                <div class="glass-radio-icon">
+                    <i class="fa fa-radio"></i>
+                </div>
+
+                <div class="glass-radio-details">
+                    <span class="glass-radio-caption">NOW PLAYING</span>
+                    <h3 id="glassRadioName">No radio selected</h3>
+                    <span id="glassRadioMode">Matching Radio</span>
+                </div>
+            </div>
+
+            <div class="glass-radio-controls">
+                <button id="glassRadioPlay" type="button" aria-label="Play radio">
+                    <i class="fa fa-play"></i>
+                </button>
+
+                <button id="glassRadioPause" type="button" aria-label="Pause radio">
+                    <i class="fa fa-pause"></i>
+                </button>
+            </div>
+
+            <div class="glass-radio-volume">
+                <i class="fa fa-volume-down"></i>
+
+                <input
+                    id="glassRadioVolume"
+                    type="range"
+                    min="0"
+                    max="100"
+                    value="65"
+                    aria-label="Radio volume"
+                >
+
+                <output id="glassRadioVolumeValue">65%</output>
+            </div>
+
+        </div>
+
+        <div class="state-result">
+            <button
+                id="playMatchingRadio"
+                type="button"
+                onclick="playMatchingRadio()"
+            >
+                <i class="fa fa-play"></i>
+                Play Matching Radio
+            </button>
+                <div class="result-title" id="glassStateResult">Adjust the sliders</div>
+                <div id="glassStateScores" class="glass-state-scores" aria-live="polite"></div>
+        </div>
+    </section>
+</div>
 
         <section class="radio-stations" id="radioStationsList">
         </section>
@@ -178,7 +284,7 @@
 
     <script type="text/javascript" src="js/config.js"></script>
     <script type="text/javascript" src="js/script.js"></script>
-    <script type="text/javascript" src="js/think.js"></script>
+    <script type="text/javascript" src="js/engine.js"></script>
     
     <script>
         // Modal de letra (o script sinaliza que há letra disponível
