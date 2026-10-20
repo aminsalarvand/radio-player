@@ -362,17 +362,19 @@ body.light-mode .ai-player-content #moodResult {
     font-variant-numeric: tabular-nums;
 }
 
-/* Compact vertical slider track */
+/* Modern glass vertical sliders */
 .mode-overlay .slider-track {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 28px;
-    height: 120px;
+    height: 160px;
 }
 
 .mode-overlay .slider-track input {
-    width: 120px;
+    --track-color: var(--slider-color, #ffffff);
+
+    width: 160px;
     height: 28px;
     margin: 0;
     padding: 0;
@@ -382,39 +384,75 @@ body.light-mode .ai-player-content #moodResult {
     -webkit-appearance: none;
     background: transparent;
     cursor: pointer;
+    outline: none;
 }
 
+/* WebKit track */
 .mode-overlay .slider-track input::-webkit-slider-runnable-track {
-    height: 5px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.2);
+    height: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow:
+        inset 0 1px 3px rgba(0, 0, 0, 0.22),
+        0 0 8px rgba(255, 255, 255, 0.035);
 }
 
+/* Firefox track */
 .mode-overlay .slider-track input::-moz-range-track {
-    height: 5px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.2);
+    height: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.22);
 }
 
+/* WebKit thumb */
 .mode-overlay .slider-track input::-webkit-slider-thumb {
-    width: 21px;
-    height: 21px;
+    width: 20px;
+    height: 20px;
     margin-top: -8px;
-    border: 3px solid #fff;
+    border: 3px solid rgba(255, 255, 255, 0.95);
     border-radius: 50%;
-    background: var(--slider-color);
-    box-shadow: 0 0 13px var(--slider-color);
+    background: var(--track-color);
+    box-shadow:
+        0 0 0 4px rgba(255, 255, 255, 0.07),
+        0 0 12px var(--track-color),
+        0 0 24px color-mix(in srgb, var(--track-color) 45%, transparent);
     appearance: none;
     -webkit-appearance: none;
+    transition: box-shadow 180ms ease, transform 180ms ease;
 }
 
+/* Firefox thumb */
 .mode-overlay .slider-track input::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    border: 3px solid #fff;
+    width: 15px;
+    height: 15px;
+    border: 3px solid rgba(255, 255, 255, 0.95);
     border-radius: 50%;
-    background: var(--slider-color);
-    box-shadow: 0 0 13px var(--slider-color);
+    background: var(--track-color);
+    box-shadow:
+        0 0 0 4px rgba(255, 255, 255, 0.07),
+        0 0 12px var(--track-color);
+    transition: box-shadow 180ms ease;
+}
+
+/* Focus and interaction */
+.mode-overlay .slider-track input:focus-visible::-webkit-slider-thumb {
+    box-shadow:
+        0 0 0 5px rgba(255, 255, 255, 0.15),
+        0 0 16px var(--track-color);
+}
+
+.mode-overlay .slider-track input:active::-webkit-slider-thumb {
+    transform: scale(1.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mode-overlay .slider-track input::-webkit-slider-thumb,
+    .mode-overlay .slider-track input::-moz-range-thumb {
+        transition: none;
+    }
 }
 
 /* Individual slider colors */
