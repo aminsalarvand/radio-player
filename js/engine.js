@@ -27,10 +27,10 @@ const engine = {
         };
 
         const labels = {
-            happy: "شاد",
-            sad: "ناراحت",
-            relax: "آرام",
-            anxious: "مضطرب"
+            happy: "Happy",
+            sad: "Sad",
+            relax: "Relax",
+            anxious: "Anxious"
         };
 
         const maxScore = Math.max(...Object.values(scores));
@@ -109,15 +109,46 @@ function updateGlassState() {
     });
 
     if (stateResult) {
-        stateResult.textContent = result.label;
+        const isEconomy =
+            document.getElementById("trafficModeLabel")
+                ?.textContent.trim() === "Economy";
+
+        const economyLabels = {
+            happy: "Khoshal",
+            sad: "Narahat",
+            relax: "Khonsa",
+            anxious: "Moztareb"
+        };
+
+        stateResult.textContent = isEconomy
+            ? economyLabels[result.mood] || result.label
+            : result.label;
     }
 
     if (stateScores) {
+        const isEconomy =
+            document.getElementById("trafficModeLabel")
+                ?.textContent.trim() === "Economy";
+
+        const labels = isEconomy
+            ? {
+                happy: "Khoshal",
+                sad: "Narahat",
+                relax: "Khonsa",
+                anxious: "Moztareb"
+            }
+            : {
+                happy: "Happy",
+                sad: "Sad",
+                relax: "Calm",
+                anxious: "Anxious"
+            };
+
         stateScores.textContent =
-            `Happy: ${result.scores.happy} | ` +
-            `Sad: ${result.scores.sad} | ` +
-            `Calm: ${result.scores.relax} | ` +
-            `Anxious: ${result.scores.anxious}`;
+            `${labels.happy}: ${result.scores.happy} | ` +
+            `${labels.sad}: ${result.scores.sad} | ` +
+            `${labels.relax}: ${result.scores.relax} | ` +
+            `${labels.anxious}: ${result.scores.anxious}`;
     }
 }
 

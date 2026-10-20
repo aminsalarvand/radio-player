@@ -1332,7 +1332,7 @@ function playAIRadio(mood) {
     switchRadio(index);
 }
 
-//Select input from mode then play radio
+// Select input from mode then play radio
 function playMatchingRadio() {
     const inputs = document.querySelectorAll(".slider-card input");
 
@@ -1348,8 +1348,28 @@ function playMatchingRadio() {
         stress: inputs[3].value
     });
 
-    playAIRadio(result.mood);
-    setAIVolume(result.mood);
+    const isEconomy =
+        document.getElementById("trafficModeLabel")
+            ?.textContent.trim() === "Economy";
+
+    const economyMoodMap = {
+        happy: "khoshal",
+        sad: "narahat",
+        relax: "khonsa",
+        anxious: "moztareb"
+    };
+
+    const selectedMood = isEconomy
+        ? economyMoodMap[result.mood]
+        : result.mood;
+
+    if (!selectedMood) {
+        console.error("No matching radio for selected mode.");
+        return;
+    }
+
+    playAIRadio(selectedMood);
+    setAIVolume(selectedMood);
 }
 
 //Switch selected radio
@@ -1725,8 +1745,37 @@ const trafficModeLabel = document.getElementById('trafficModeLabel');
 
 if (trafficModeToggle && trafficModeLabel) {
     trafficModeToggle.addEventListener('click', function () {
-        const economyMode = trafficModeLabel.textContent.trim() === 'Business';
-        trafficModeLabel.textContent = economyMode ? 'Economy' : 'Business';
+        const economyMode =
+            trafficModeLabel.textContent.trim() === 'Business';
+
+        trafficModeLabel.textContent = economyMode
+            ? 'Economy'
+            : 'Business';
+
+        const sliderLabels = document.querySelectorAll(
+            '.slider-card .slider-label'
+        );
+
+        const businessLabels = [
+            'Happy',
+            'Sad',
+            'Calm',
+            'Anxious'
+        ];
+
+        const economyLabels = [
+            'Khoshal',
+            'Narahat',
+            'Khonsa',
+            'Moztareb'
+        ];
+
+        sliderLabels.forEach((label, index) => {
+            label.textContent = economyMode
+                ? economyLabels[index]
+                : businessLabels[index];
+        });
+
         // Economy plays Tehran Music; Business plays Source Radio.
         switchRadio(economyMode ? 8 : 0);
     });
