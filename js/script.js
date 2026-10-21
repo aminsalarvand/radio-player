@@ -324,10 +324,10 @@ function updateProxyHistory(history) {
         `;
 
         article.querySelector(".song").textContent =
-            songInfo.song || "Desconhecido";
+            songInfo.song || "Unknown";
 
         article.querySelector(".artist").textContent =
-            songInfo.artist || "Desconhecido";
+            songInfo.artist || "Unknown";
 
         historicContainer.appendChild(article);
 
@@ -385,10 +385,10 @@ function updateSavedSongs(savedSongs) {
         `;
 
         article.querySelector(".song").textContent =
-            songInfo.song || "Desconhecido";
+            songInfo.song || "Unknown";
 
         article.querySelector(".artist").textContent =
-            songInfo.artist || "Desconhecido";
+            songInfo.artist || "Unknown";
 
         savedContainer.appendChild(article);
 
@@ -506,8 +506,8 @@ async function getStreamingData() {
                           <div class="artist"></div>
                         </div>
                       `;
-                    article.querySelector(".song").textContent = songInfo.song || "Desconhecido";
-                    article.querySelector(".artist").textContent = songInfo.artist || "Desconhecido";
+                    article.querySelector(".song").textContent = songInfo.song || "Unknown";
+                    article.querySelector(".artist").textContent = songInfo.artist || "Unknown";
                     historicContainer.appendChild(article);
                     setTimeout(() => article.classList.remove("animated", "slideInRight"), 2000);
                     try {
@@ -1086,74 +1086,6 @@ async function startIcyMetadata(station) {
 function updateIcyNowPlaying(streamTitle) {
     let artist = '';
     let song = streamTitle;
-    //To remove aditional information
-    if (currentRadio.id === 1) {
-        const cleanTitle = song
-            .replace(/\.MP3$/i, '')
-            .trim();
-
-        const radioParts = cleanTitle
-            .split(' - ')
-            .map(part => part.trim())
-            .filter(Boolean);
-
-        if (radioParts.length >= 2) {
-            // Elahe - Mey-Khooneh
-            // Moein - 04 - Ghasam Be Eshgh
-
-            artist = radioParts[0];
-
-            let titleParts = radioParts.slice(1);
-
-            if (/^\d{1,3}$/.test(titleParts[0])) {
-                titleParts.shift();
-            }
-
-            song = titleParts.join(' - ').trim();
-
-        } else {
-            const underscoreParts = cleanTitle
-                .split('_')
-                .map(part => part.trim())
-                .filter(Boolean);
-
-            // Track 01_Dar Gham
-            const trackMatch = cleanTitle.match(
-                /^Track\s*(\d+)[_\s]+(.+)$/i
-            );
-
-            if (trackMatch) {
-                artist = `Track ${trackMatch[1]}`;
-                song = trackMatch[2].trim();
-
-            } else {
-                // Alireza_Ghorbani_Arghavan_ارغوان_علیرضا_قربانی_
-
-                const persianParts = underscoreParts.filter(part =>
-                    /[\u0600-\u06FF]/.test(part)
-                );
-
-                if (persianParts.length >= 3) {
-                    song = persianParts[0];
-                    artist = persianParts.slice(1).join(' ');
-
-                } else {
-                    const persianMatch = cleanTitle.match(
-                        /^(.+?)\s+به\s+/
-                    );
-
-                    if (persianMatch && persianMatch[1]) {
-                        song = persianMatch[1].trim();
-                    } else {
-                        song = cleanTitle
-                            .replace(/_/g, ' ')
-                            .replace(/\s+/g, ' ')
-                            .trim();
-                    }
-                }
-            }
-        }
-    }
 
     if (streamTitle.includes(' - ')) {
         const parts = streamTitle.split(' - ');
@@ -1162,21 +1094,9 @@ function updateIcyNowPlaying(streamTitle) {
         song = parts.join(' - ').trim();
     }
 
-    const currentSongElement =
-        document.getElementById('currentSong');
+    const currentSongElement = document.getElementById('currentSong');
 
-    const currentArtistElement =
-        document.getElementById('currentArtist');
-
-    if (currentSongElement) {
-        currentSongElement.textContent =
-            song || 'Unknown';
-    }
-
-    if (currentArtistElement) {
-        currentArtistElement.textContent =
-            artist || 'Unknown';
-    }
+    const currentArtistElement = document.getElementById('currentArtist');
 
     startTitleMarquee(currentRadio.name);
 
